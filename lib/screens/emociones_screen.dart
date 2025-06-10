@@ -1,0 +1,161 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+
+class EmocionesScreen extends StatefulWidget {
+  const EmocionesScreen({super.key});
+
+  @override
+  State<EmocionesScreen> createState() => _EmocionesScreenState();
+}
+
+class _EmocionesScreenState extends State<EmocionesScreen> {
+  bool isBoy = true; // true = niño, false = niña
+  final FlutterTts flutterTts = FlutterTts(); 
+
+  final Map<String, Map<String, dynamic>> emocionesBoy = {
+    // 'Feliz': {'emoji': '😊', 'color': Colors.yellow, 'imagen': 'assets/niño_feliz.png'},
+    'Miedo': {'emoji': '😢', 'color': Colors.blue, 'imagen': 'assets/emociones/boy_miedoso.png'},
+    'Enojado': {'emoji': '😠', 'color': Colors.red, 'imagen': 'assets/emociones/boy_enojado.png'},
+    'Sorprendido': {'emoji': '😲', 'color': Colors.orange, 'imagen': 'assets/emociones/boy_sorprendido.png'},
+    'Tranquilo': {'emoji': '😨', 'color': Colors.purple, 'imagen': 'assets/emociones/boy_tranquilo.png'},
+    // 'Cansado': {'emoji': '😴', 'color': Colors.grey, 'imagen': 'assets/emociones/boy_cansado.png'},
+  };
+
+  final Map<String, Map<String, dynamic>> emocionesGirl = {
+    'Feliz': {'emoji': '😊', 'color': Colors.green, 'imagen': 'assets/emociones/girl_feliz.png'},
+    'Triste': {'emoji': '😢', 'color': Colors.blue, 'imagen': 'assets/emociones/girl_triste.png'},
+    'Enojada': {'emoji': '😠', 'color': Colors.red, 'imagen': 'assets/emociones/girl_enojada.png'},
+    'Sorprendida': {'emoji': '😲', 'color': Colors.orange, 'imagen': 'assets/emociones/girl_sorprendida.png'},
+    'Asustada': {'emoji': '😨', 'color': Colors.purple, 'imagen': 'assets/emociones/girl_miedosa.png'},
+    'Tranquila': {'emoji': '😴', 'color': Colors.grey, 'imagen': 'assets/emociones/girl_tranquila.png'},
+  };
+
+  @override
+  void dispose() {
+    flutterTts.stop(); // Liberar el TTS al cerrar la pantalla
+    super.dispose();
+  }
+
+  Future<void> _speak(String text) async {
+    try {
+      await flutterTts.setLanguage("es-ES");
+      await flutterTts.setPitch(1.0);
+      await flutterTts.speak(text);
+    } catch (e) {
+      debugPrint('Error en TTS: $e');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final emociones = isBoy ? emocionesBoy : emocionesGirl;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Emociones'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+        actions: [
+          // Botón de selección niño/niña
+          IconButton(
+            icon: Icon(isBoy ? Icons.face : Icons.face_3),
+            onPressed: () {
+              setState(() {
+                isBoy = !isBoy;
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Mostrando emociones para ${isBoy ? 'niño' : 'niña'}'),
+                  duration: const Duration(milliseconds: 500),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      body: GridView.builder(
+        padding: const EdgeInsets.all(16),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+          childAspectRatio: 1.0,
+        ),
+        itemCount: emociones.length,
+        itemBuilder: (context, index) {
+          final key = emociones.keys.elementAt(index);
+          final emocion = emociones[key]!;
+          return _buildEmocionCard(
+            context,
+            key,
+            emocion['emoji'] as String,
+            emocion['color'] as Color,
+            emocion['imagen'] as String,
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildEmocionCard(
+    BuildContext context, 
+    String nombre, 
+    String emoji, 
+    Color color,
+    String imagenPath,
+  ) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      color: color,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Seleccionaste: $nombre'),
+              duration: const Duration(seconds: 1),
+            ),
+          );
+          // TTS
+          _speak(nombre);
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Mostrar imagen si existe, sino mostrar emoji
+            imagenPath.isNotEmpty
+                ? Image.asset(
+                    imagenPath,
+                    width: 80,
+                    height: 80,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Text(
+                        emoji,
+                        style: const TextStyle(fontSize: 50),
+                      );
+                    },
+                  )
+                : Text(
+                    emoji,
+                    style: const TextStyle(fontSize: 50),
+                  ),
+            const SizedBox(height: 8),
+            Text(
+              nombre,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
