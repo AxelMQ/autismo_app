@@ -12,8 +12,14 @@ class MyApp extends StatelessWidget {
       title: 'Mi App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        scaffoldBackgroundColor: Color(0xFFFFF8E1),
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+          appBarTheme: AppBarTheme(
+          backgroundColor: Color.fromARGB(255, 248, 235, 190), // Fondo crema
+          foregroundColor: Colors.black,      // Color del texto y los íconos
+          elevation: 0,                       // Opcional: sin sombra
+        ),
       ),
       home: const HomeScreen(),
     );

@@ -19,13 +19,12 @@ class HomeScreen extends StatelessWidget {
         title: const Text(
           'Yo te hablo?',
           style: TextStyle(
-            fontSize: 24,
+            fontSize: 30,
             fontWeight: FontWeight.bold,
             color: Colors.black,
           ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: Center(
@@ -50,7 +49,7 @@ class HomeScreen extends StatelessWidget {
                   text: 'COLORES',
                   color: Colors.purple,
                   size: buttonSize,
-                  destination: const ColoresScreen(),
+                  destination: ColoresScreen(),
                   imagePath: 'assets/imgs/colores.png',
                 ),
               ],
@@ -82,7 +81,7 @@ class HomeScreen extends StatelessWidget {
             const Text(
               'AUTISMO',
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 30,
                 fontWeight: FontWeight.bold,
                 color: Colors.black54,
               ),
@@ -114,7 +113,7 @@ class HomeScreen extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          elevation: 5,
+          elevation: 10,
           padding: const EdgeInsets.all(8),
         ),
         child: Column(

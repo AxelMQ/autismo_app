@@ -13,19 +13,19 @@ class _EmocionesScreenState extends State<EmocionesScreen> {
   final FlutterTts flutterTts = FlutterTts(); 
 
   final Map<String, Map<String, dynamic>> emocionesBoy = {
-    // 'Feliz': {'emoji': '😊', 'color': Colors.yellow, 'imagen': 'assets/niño_feliz.png'},
+    'Feliz': {'emoji': '😊', 'color': Colors.yellow, 'imagen': 'assets/emociones/boy_feliz.png'},
     'Miedo': {'emoji': '😢', 'color': Colors.blue, 'imagen': 'assets/emociones/boy_miedoso.png'},
     'Enojado': {'emoji': '😠', 'color': Colors.red, 'imagen': 'assets/emociones/boy_enojado.png'},
     'Sorprendido': {'emoji': '😲', 'color': Colors.orange, 'imagen': 'assets/emociones/boy_sorprendido.png'},
     'Tranquilo': {'emoji': '😨', 'color': Colors.purple, 'imagen': 'assets/emociones/boy_tranquilo.png'},
-    // 'Cansado': {'emoji': '😴', 'color': Colors.grey, 'imagen': 'assets/emociones/boy_cansado.png'},
+    'Triste': {'emoji': '😴', 'color': Colors.grey, 'imagen': 'assets/emociones/boy_triste.png'},
   };
 
   final Map<String, Map<String, dynamic>> emocionesGirl = {
     'Feliz': {'emoji': '😊', 'color': Colors.green, 'imagen': 'assets/emociones/girl_feliz.png'},
     'Triste': {'emoji': '😢', 'color': Colors.blue, 'imagen': 'assets/emociones/girl_triste.png'},
     'Enojada': {'emoji': '😠', 'color': Colors.red, 'imagen': 'assets/emociones/girl_enojada.png'},
-    'Sorprendida': {'emoji': '😲', 'color': Colors.orange, 'imagen': 'assets/emociones/girl_sorprendida.png'},
+    'Sorprendida': {'emoji': '😲', 'color': const Color.fromARGB(255, 53, 52, 51), 'imagen': 'assets/emociones/girl_sorprendida.png'},
     'Asustada': {'emoji': '😨', 'color': Colors.purple, 'imagen': 'assets/emociones/girl_miedosa.png'},
     'Tranquila': {'emoji': '😴', 'color': Colors.grey, 'imagen': 'assets/emociones/girl_tranquila.png'},
   };
@@ -131,8 +131,8 @@ class _EmocionesScreenState extends State<EmocionesScreen> {
             imagenPath.isNotEmpty
                 ? Image.asset(
                     imagenPath,
-                    width: 80,
-                    height: 80,
+                    width: 100,
+                    height: 100,
                     errorBuilder: (context, error, stackTrace) {
                       return Text(
                         emoji,

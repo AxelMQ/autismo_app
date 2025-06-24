@@ -62,6 +62,11 @@ flutter:
   assets:
    - assets/emociones/
    - assets/imgs/
+   - assets/frutas/
+   - assets/frutas/amarrillo/
+   - assets/frutas/naranja/
+   - assets/frutas/rojo/
+   - assets/frutas/verde/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
