@@ -37,23 +37,35 @@ class ColoresScreen extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: GridView.builder(
-        padding: const EdgeInsets.all(8),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 12,
-          mainAxisSpacing: 12,
-          childAspectRatio: 0.85,
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxHeight: 800,
+          ),
+          child: GridView.builder(
+            shrinkWrap: true,
+            physics:
+                colores.length <= 4
+                    ? const NeverScrollableScrollPhysics()
+                    : null,
+            padding: const EdgeInsets.all(8),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 0.85,
+            ),
+            itemCount: colores.length,
+            itemBuilder: (context, index) {
+              final colorData = colores[index];
+              return _buildColorCircle(
+                context,
+                colorData['nombre'],
+                colorData['color'],
+              );
+            },
+          ),
         ),
-        itemCount: colores.length,
-        itemBuilder: (context, index) {
-          final colorData = colores[index];
-          return _buildColorCircle(
-            context,
-            colorData['nombre'],
-            colorData['color'],
-          );
-        },
       ),
     );
   }

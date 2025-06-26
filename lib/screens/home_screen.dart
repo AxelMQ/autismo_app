@@ -62,9 +62,10 @@ class HomeScreen extends StatelessWidget {
                 _buildCategoryButton(
                   context: context,
                   text: 'FAMILIA',
-                  color: Colors.blue,
+                  color: const Color.fromARGB(255, 23, 108, 177),
                   size: buttonSize,
                   destination: const FamiliaScreen(),
+                  imagePath: 'assets/imgs/familia.png'
                 ),
                 const SizedBox(width: 20),
                 _buildCategoryButton(

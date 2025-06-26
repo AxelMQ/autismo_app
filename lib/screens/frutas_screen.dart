@@ -78,58 +78,70 @@ class FrutasScreen extends StatelessWidget {
         title: Text('Frutas $colorNombre'),
         backgroundColor: color,
       ),
-      body: GridView.builder(
-        padding: const EdgeInsets.all(16),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          childAspectRatio: 0.85,
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxHeight: 1000),
+          child: GridView.builder(
+            shrinkWrap: true,
+            physics:
+                frutas.length <= 4
+                    ? const NeverScrollableScrollPhysics()
+                    : null,
+            padding: const EdgeInsets.all(16),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 0.85,
+            ),
+            itemCount: frutas.length,
+            itemBuilder: (context, index) {
+              final fruta = frutas[index];
+              return Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 4,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: () {
+                    _speak(fruta['nombre']!);
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image.asset(
+                            fruta['imagen']!,
+                            fit: BoxFit.contain,
+                            errorBuilder:
+                                (context, error, stackTrace) => const Icon(
+                                  Icons.image_not_supported,
+                                  size: 48,
+                                ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Text(
+                          fruta['nombre']!,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
         ),
-        itemCount: frutas.length,
-        itemBuilder: (context, index) {
-          final fruta = frutas[index];
-          return Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            elevation: 4,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(16),
-              onTap: () {
-                _speak(fruta['nombre']!);
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Image.asset(
-                        fruta['imagen']!,
-                        fit: BoxFit.contain,
-                        errorBuilder:
-                            (context, error, stackTrace) =>
-                                const Icon(Icons.image_not_supported, size: 48),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Text(
-                      fruta['nombre']!,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
       ),
     );
   }
