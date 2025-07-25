@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EmocionesScreen extends StatefulWidget {
   const EmocionesScreen({super.key});
@@ -9,8 +10,22 @@ class EmocionesScreen extends StatefulWidget {
 }
 
 class _EmocionesScreenState extends State<EmocionesScreen> {
-  bool isBoy = true; // true = niño, false = niña
+  bool? isBoy;  // true = niño, false = niña
   final FlutterTts flutterTts = FlutterTts(); 
+
+  @override
+  void initState() {
+    super.initState();
+    _cargarGeneroGuardado();
+  }
+
+  Future<void> _cargarGeneroGuardado() async {
+    final prefs = await SharedPreferences.getInstance();
+    final genero = prefs.getString('genero_nino');
+    setState(() {
+      isBoy = (genero == 'niño'); // true si es niño, false si es niña
+    });
+  }
 
   final Map<String, Map<String, dynamic>> emocionesBoy = {
     'Feliz': {'emoji': '😊', 'color': Colors.yellow, 'imagen': 'assets/emociones/boy_feliz.png'},
@@ -48,7 +63,13 @@ class _EmocionesScreenState extends State<EmocionesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final emociones = isBoy ? emocionesBoy : emocionesGirl;
+    if (isBoy == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    final emociones = isBoy! ? emocionesBoy : emocionesGirl;
 
     return Scaffold(
       appBar: AppBar(
@@ -60,15 +81,15 @@ class _EmocionesScreenState extends State<EmocionesScreen> {
         actions: [
           // Botón de selección niño/niña
           IconButton(
-            icon: Icon(isBoy ? Icons.face : Icons.face_3),
+            icon: Icon(isBoy! ? Icons.face : Icons.face_3),
             onPressed: () {
               setState(() {
-                isBoy = !isBoy;
+                isBoy = !isBoy!;
               });
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Mostrando emociones para ${isBoy ? 'niño' : 'niña'}'),
-                  duration: const Duration(milliseconds: 500),
+                  content: Text('Mostrando emociones para ${isBoy! ? 'niño' : 'niña'}'),
+                  duration: const Duration(milliseconds: 800),
                 ),
               );
             },

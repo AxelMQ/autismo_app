@@ -1,8 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:autismo_app/screens/colores_screen.dart';
 import 'package:autismo_app/screens/emociones_screen.dart';
 import 'package:autismo_app/screens/familia_screen.dart';
+import 'package:autismo_app/screens/genero_screen.dart';
 import 'package:autismo_app/screens/hacer_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -24,6 +28,20 @@ class HomeScreen extends StatelessWidget {
             color: Colors.black,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () async {
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.remove('genero_nino');
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => GeneroScreen()),
+              );
+            },
+          ),
+        ],
+
         centerTitle: true,
         elevation: 0,
       ),
@@ -65,7 +83,7 @@ class HomeScreen extends StatelessWidget {
                   color: const Color.fromARGB(255, 23, 108, 177),
                   size: buttonSize,
                   destination: const FamiliaScreen(),
-                  imagePath: 'assets/imgs/familia.png'
+                  imagePath: 'assets/imgs/familia.png',
                 ),
                 const SizedBox(width: 20),
                 _buildCategoryButton(
