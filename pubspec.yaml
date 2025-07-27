@@ -69,6 +69,14 @@ flutter:
    - assets/frutas/rojo/
    - assets/frutas/verde/
    - assets/familia/
+   - assets/hacer/
+   - assets/hacer/boy/manana/
+   - assets/hacer/boy/tarde/
+   - assets/hacer/boy/noche/
+   - assets/hacer/girl/manana/
+   - assets/hacer/girl/tarde/
+   - assets/hacer/girl/noche/
+   - assets/hacer/numeros/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
