@@ -32,44 +32,86 @@ class _GeneroScreenState extends State<GeneroScreen> {
       generoGuardado = genero;
     });
 
-    // Puedes comentar esta línea si quieres quedarte en esta pantalla
     Navigator.pushReplacement(
-      // ignore: use_build_context_synchronously
       context,
-      MaterialPageRoute(builder: (context) => HomeScreen()),
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("¿Quién eres?")),
-      body: Center(
+      backgroundColor: const Color(0xFFF6F9FC),
+      appBar: AppBar(
+        title: const Text("¿Quién eres?"),
+        // backgroundColor: const Color(0xFF6C63FF),
+        // foregroundColor: Colors.white,
+        elevation: 0,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // if (generoGuardado != null)
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  "Género guardado: $generoGuardado",
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+            const Text(
+              "Selecciona:",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
               ),
-            const Text("Selecciona el género del niño o niña:"),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => _guardarGenero('niño'),
-              child: const Text("Soy niño"),
+              textAlign: TextAlign.center,
             ),
-            ElevatedButton(
-              onPressed: () => _guardarGenero('niña'),
-              child: const Text("Soy niña"),
+            const SizedBox(height: 30),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildGeneroCard(
+                  context,
+                  genero: 'niño',
+                  color: Colors.blue[300]!,
+                  icon: Icons.boy,
+                ),
+                _buildGeneroCard(
+                  context,
+                  genero: 'niña',
+                  color: Colors.pink[300]!,
+                  icon: Icons.girl,
+                ),
+              ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGeneroCard(BuildContext context,
+      {required String genero, required Color color, required IconData icon}) {
+    return GestureDetector(
+      onTap: () => _guardarGenero(genero),
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        color: color,
+        child: SizedBox(
+          width: 120,
+          height: 150,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 60, color: Colors.white),
+              const SizedBox(height: 10),
+              Text(
+                genero.toUpperCase(),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
