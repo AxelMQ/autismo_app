@@ -1,23 +1,11 @@
+import 'package:autismo_app/services/tts_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 
 class FrutasScreen extends StatelessWidget {
   final String colorNombre;
   final Color color;
 
-  FrutasScreen({super.key, required this.colorNombre, required this.color});
-
-  final FlutterTts flutterTts = FlutterTts();
-
-  Future<void> _speak(String text) async {
-    try {
-      await flutterTts.setLanguage("es-ES");
-      await flutterTts.setPitch(1.0);
-      await flutterTts.speak(text);
-    } catch (e) {
-      debugPrint('Error en TTS: $e');
-    }
-  }
+  const FrutasScreen({super.key, required this.colorNombre, required this.color});
 
   List<Map<String, String>> _getFrutasPorColor(String colorNombre) {
     switch (colorNombre) {
@@ -105,7 +93,7 @@ class FrutasScreen extends StatelessWidget {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(16),
                   onTap: () {
-                    _speak(fruta['nombre']!);
+                    TtsService.speak(fruta['nombre']!);
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

@@ -1,8 +1,8 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:autismo_app/screens/momento_detalle_screen.dart';
+import 'package:autismo_app/services/tts_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HacerScreen extends StatefulWidget {
@@ -16,7 +16,6 @@ class _HacerScreenState extends State<HacerScreen> {
   String? genero;
   String? momentoSeleccionado;
   Map<String, List<String>> seleccionPorDia = {};
-  final FlutterTts flutterTts = FlutterTts();
 
   @override
   void initState() {
@@ -26,18 +25,8 @@ class _HacerScreenState extends State<HacerScreen> {
 
   @override
   void dispose() {
-    flutterTts.stop(); // Detener cualquier reproducción activa
+    TtsService.stop(); // Detener cualquier reproducción activa
     super.dispose();
-  }
-
-  Future<void> _speak(String text) async {
-    try {
-      await flutterTts.setLanguage("es-ES");
-      await flutterTts.setPitch(1.0);
-      await flutterTts.speak(text);
-    } catch (e) {
-      debugPrint('Error en TTS: $e');
-    }
   }
 
   final Map<String, List<String>> textosActividadesBoy = {
@@ -121,7 +110,7 @@ class _HacerScreenState extends State<HacerScreen> {
         seleccionPorDia[momento]!.add(ruta);
       });
 
-      _speak(texto); // 🔊 Decir el texto correspondiente
+      TtsService.speak(texto); // 🔊 Decir el texto correspondiente
     }
   }
 

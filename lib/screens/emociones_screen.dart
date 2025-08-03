@@ -1,3 +1,4 @@
+import 'package:autismo_app/services/tts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,8 +11,8 @@ class EmocionesScreen extends StatefulWidget {
 }
 
 class _EmocionesScreenState extends State<EmocionesScreen> {
-  bool? isBoy;  // true = niño, false = niña
-  final FlutterTts flutterTts = FlutterTts(); 
+  bool? isBoy; // true = niño, false = niña
+  final FlutterTts flutterTts = FlutterTts();
 
   @override
   void initState() {
@@ -28,34 +29,80 @@ class _EmocionesScreenState extends State<EmocionesScreen> {
   }
 
   final Map<String, Map<String, dynamic>> emocionesBoy = {
-    'Feliz': {'emoji': '😊', 'color': Colors.yellow, 'imagen': 'assets/emociones/boy_feliz.png'},
-    'Miedo': {'emoji': '😢', 'color': Colors.blue, 'imagen': 'assets/emociones/boy_miedoso.png'},
-    'Enojado': {'emoji': '😠', 'color': Colors.red, 'imagen': 'assets/emociones/boy_enojado.png'},
-    'Sorprendido': {'emoji': '😲', 'color': Colors.orange, 'imagen': 'assets/emociones/boy_sorprendido.png'},
-    'Tranquilo': {'emoji': '😨', 'color': Colors.purple, 'imagen': 'assets/emociones/boy_tranquilo.png'},
-    'Triste': {'emoji': '😴', 'color': Colors.grey, 'imagen': 'assets/emociones/boy_triste.png'},
+    'Feliz': {
+      'emoji': '😊',
+      'color': Colors.yellow,
+      'imagen': 'assets/emociones/boy_feliz.png',
+    },
+    'Miedo': {
+      'emoji': '😢',
+      'color': Colors.blue,
+      'imagen': 'assets/emociones/boy_miedoso.png',
+    },
+    'Enojado': {
+      'emoji': '😠',
+      'color': Colors.red,
+      'imagen': 'assets/emociones/boy_enojado.png',
+    },
+    'Sorprendido': {
+      'emoji': '😲',
+      'color': Colors.orange,
+      'imagen': 'assets/emociones/boy_sorprendido.png',
+    },
+    'Tranquilo': {
+      'emoji': '😨',
+      'color': Colors.purple,
+      'imagen': 'assets/emociones/boy_tranquilo.png',
+    },
+    'Triste': {
+      'emoji': '😴',
+      'color': Colors.grey,
+      'imagen': 'assets/emociones/boy_triste.png',
+    },
   };
 
   final Map<String, Map<String, dynamic>> emocionesGirl = {
-    'Feliz': {'emoji': '😊', 'color': Colors.green, 'imagen': 'assets/emociones/girl_feliz.png'},
-    'Triste': {'emoji': '😢', 'color': Colors.blue, 'imagen': 'assets/emociones/girl_triste.png'},
-    'Enojada': {'emoji': '😠', 'color': Colors.red, 'imagen': 'assets/emociones/girl_enojada.png'},
-    'Sorprendida': {'emoji': '😲', 'color': const Color.fromARGB(255, 53, 52, 51), 'imagen': 'assets/emociones/girl_sorprendida.png'},
-    'Asustada': {'emoji': '😨', 'color': Colors.purple, 'imagen': 'assets/emociones/girl_miedosa.png'},
-    'Tranquila': {'emoji': '😴', 'color': Colors.grey, 'imagen': 'assets/emociones/girl_tranquila.png'},
+    'Feliz': {
+      'emoji': '😊',
+      'color': Colors.green,
+      'imagen': 'assets/emociones/girl_feliz.png',
+    },
+    'Triste': {
+      'emoji': '😢',
+      'color': Colors.blue,
+      'imagen': 'assets/emociones/girl_triste.png',
+    },
+    'Enojada': {
+      'emoji': '😠',
+      'color': Colors.red,
+      'imagen': 'assets/emociones/girl_enojada.png',
+    },
+    'Sorprendida': {
+      'emoji': '😲',
+      'color': const Color.fromARGB(255, 53, 52, 51),
+      'imagen': 'assets/emociones/girl_sorprendida.png',
+    },
+    'Asustada': {
+      'emoji': '😨',
+      'color': Colors.purple,
+      'imagen': 'assets/emociones/girl_miedosa.png',
+    },
+    'Tranquila': {
+      'emoji': '😴',
+      'color': Colors.grey,
+      'imagen': 'assets/emociones/girl_tranquila.png',
+    },
   };
 
   @override
   void dispose() {
-    flutterTts.stop(); // Liberar el TTS al cerrar la pantalla
+    TtsService.stop(); // Liberar el TTS al cerrar la pantalla
     super.dispose();
   }
 
   Future<void> _speak(String text) async {
     try {
-      await flutterTts.setLanguage("es-ES");
-      await flutterTts.setPitch(1.0);
-      await flutterTts.speak(text);
+      await TtsService.speak(text);
     } catch (e) {
       debugPrint('Error en TTS: $e');
     }
@@ -64,9 +111,7 @@ class _EmocionesScreenState extends State<EmocionesScreen> {
   @override
   Widget build(BuildContext context) {
     if (isBoy == null) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     final emociones = isBoy! ? emocionesBoy : emocionesGirl;
@@ -83,15 +128,17 @@ class _EmocionesScreenState extends State<EmocionesScreen> {
           IconButton(
             icon: Icon(isBoy! ? Icons.face : Icons.face_3),
             onPressed: () {
-              setState(() {
-                isBoy = !isBoy!;
-              });
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Mostrando emociones para ${isBoy! ? 'niño' : 'niña'}'),
-                  duration: const Duration(milliseconds: 800),
-                ),
-              );
+              // setState(() {
+              //   isBoy = !isBoy!;
+              // });
+              // ScaffoldMessenger.of(context).showSnackBar(
+              //   SnackBar(
+              //     content: Text(
+              //       'Mostrando emociones para ${isBoy! ? 'niño' : 'niña'}',
+              //     ),
+              //     duration: const Duration(milliseconds: 800),
+              //   ),
+              // );
             },
           ),
         ],
@@ -121,27 +168,25 @@ class _EmocionesScreenState extends State<EmocionesScreen> {
   }
 
   Widget _buildEmocionCard(
-    BuildContext context, 
-    String nombre, 
-    String emoji, 
+    BuildContext context,
+    String nombre,
+    String emoji,
     Color color,
     String imagenPath,
   ) {
     return Card(
       elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       color: color,
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Seleccionaste: $nombre'),
-              duration: const Duration(seconds: 1),
-            ),
-          );
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   SnackBar(
+          //     content: Text('Seleccionaste: $nombre'),
+          //     duration: const Duration(seconds: 1),
+          //   ),
+          // );
           // TTS
           _speak(nombre);
         },
@@ -151,20 +196,14 @@ class _EmocionesScreenState extends State<EmocionesScreen> {
             // Mostrar imagen si existe, sino mostrar emoji
             imagenPath.isNotEmpty
                 ? Image.asset(
-                    imagenPath,
-                    width: 100,
-                    height: 100,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Text(
-                        emoji,
-                        style: const TextStyle(fontSize: 50),
-                      );
-                    },
-                  )
-                : Text(
-                    emoji,
-                    style: const TextStyle(fontSize: 50),
-                  ),
+                  imagenPath,
+                  width: 100,
+                  height: 100,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Text(emoji, style: const TextStyle(fontSize: 50));
+                  },
+                )
+                : Text(emoji, style: const TextStyle(fontSize: 50)),
             const SizedBox(height: 8),
             Text(
               nombre,

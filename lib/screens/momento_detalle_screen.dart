@@ -1,5 +1,5 @@
+import 'package:autismo_app/services/tts_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 
 class MomentoDetalleScreen extends StatefulWidget {
   final String genero;
@@ -23,7 +23,6 @@ class MomentoDetalleScreen extends StatefulWidget {
 
 class _MomentoDetalleScreenState extends State<MomentoDetalleScreen> {
   late List<String> seleccionadas;
-  final FlutterTts flutterTts = FlutterTts();
 
   @override
   void initState() {
@@ -32,20 +31,8 @@ class _MomentoDetalleScreenState extends State<MomentoDetalleScreen> {
     _speakTextoInicial();
   }
 
-  Future<void> _speak(String text) async {
-    try {
-      await flutterTts.setLanguage("es-ES");
-      await flutterTts.setSpeechRate(0.5); // Velocidad normal
-      await flutterTts.speak(text);
-    } catch (e) {
-      debugPrint('Error en TTS: $e');
-    }
-  }
-
   Future<void> _speakTextoInicial() async {
-    await flutterTts.setLanguage("es-ES");
-    await flutterTts.setSpeechRate(0.5); // Velocidad normal
-    await flutterTts.speak("¿Qué hiciste en la ${widget.momento}?");
+    await TtsService.speak("¿Qué hiciste en la ${widget.momento}?");
   }
 
   void seleccionarImagen(String ruta, int index) {
@@ -53,7 +40,7 @@ class _MomentoDetalleScreenState extends State<MomentoDetalleScreen> {
       setState(() {
         seleccionadas.add(ruta);
       });
-      _speak(widget.textos[widget.momento]![index]);
+      TtsService.speak(widget.textos[widget.momento]![index]);
     }
   }
 
@@ -66,7 +53,7 @@ class _MomentoDetalleScreenState extends State<MomentoDetalleScreen> {
 
   @override
   void dispose() {
-    flutterTts.stop();
+    TtsService.stop();
     super.dispose();
   }
 

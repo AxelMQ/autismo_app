@@ -1,9 +1,19 @@
 import 'package:autismo_app/screens/genero_screen.dart';
 import 'package:autismo_app/screens/home_screen.dart';
+import 'package:autismo_app/services/tts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() => runApp(const MyApp());
+// void main() => runApp(const MyApp());
+void main () async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // final prefs = await SharedPreferences.getInstance();
+  // final genero = prefs.getString('genero_nino') ?? 'niño'; // Por defecto 'niño'
+
+  await TtsService.init(); 
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

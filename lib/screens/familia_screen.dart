@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:autismo_app/services/tts_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 
 class FamiliaScreen extends StatefulWidget {
   const FamiliaScreen({super.key});
@@ -11,7 +11,6 @@ class FamiliaScreen extends StatefulWidget {
 }
 
 class _FamiliaScreenState extends State<FamiliaScreen> {
-  final FlutterTts flutterTts = FlutterTts();
 
   final List<Map<String, String>> familia = const [
     {'nombre': 'Abuelo', 'img': 'assets/familia/abuelo.png'},
@@ -22,15 +21,9 @@ class _FamiliaScreenState extends State<FamiliaScreen> {
     {'nombre': 'Hermana', 'img': 'assets/familia/hermana.png'},
   ];
 
-  Future<void> _speak(String text) async {
-    await flutterTts.setLanguage("es-ES");
-    await flutterTts.setPitch(1.0);
-    await flutterTts.speak(text);
-  }
-
   @override
   void dispose() {
-    flutterTts.stop();
+    TtsService.stop();
     super.dispose();
   }
 
@@ -94,7 +87,7 @@ class _FamiliaScreenState extends State<FamiliaScreen> {
         children: [
           InkWell(
             onTap: () async {
-              await _speak(nombre);
+              await TtsService.speak(nombre);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('Seleccionaste: $nombre'),

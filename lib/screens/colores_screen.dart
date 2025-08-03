@@ -1,13 +1,11 @@
 // ignore_for_file: deprecated_member_use, use_build_context_synchronously
 
 import 'package:autismo_app/screens/frutas_screen.dart';
+import 'package:autismo_app/services/tts_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 
 class ColoresScreen extends StatelessWidget {
   ColoresScreen({super.key});
-
-  final FlutterTts flutterTts = FlutterTts();
 
   final List<Map<String, dynamic>> colores = [
     {'nombre': 'Amarillo', 'color': Colors.yellow},
@@ -15,16 +13,6 @@ class ColoresScreen extends StatelessWidget {
     {'nombre': 'Rojo', 'color': Colors.red},
     {'nombre': 'Verde', 'color': Colors.green},
   ];
-
-  Future<void> _speak(String text) async {
-    try {
-      await flutterTts.setLanguage("es-ES");
-      await flutterTts.setPitch(1.0);
-      await flutterTts.speak(text);
-    } catch (e) {
-      debugPrint('Error en TTS: $e');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +72,8 @@ class ColoresScreen extends StatelessWidget {
               ),
             );
 
-            await _speak(nombre);
+            await TtsService.speak(nombre);
+            
             Navigator.push(
               context,
               MaterialPageRoute(
