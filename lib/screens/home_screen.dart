@@ -92,6 +92,7 @@ class HomeScreen extends StatelessWidget {
                   color: Colors.green,
                   size: buttonSize,
                   destination: const HacerScreen(),
+                  imagePath: 'assets/imgs/hacer.png',
                 ),
               ],
             ),

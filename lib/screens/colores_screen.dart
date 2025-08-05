@@ -65,12 +65,12 @@ class ColoresScreen extends StatelessWidget {
         return InkWell(
           borderRadius: BorderRadius.circular(100),
           onTap: () async {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Seleccionaste: $nombre'),
-                duration: const Duration(seconds: 1),
-              ),
-            );
+            // ScaffoldMessenger.of(context).showSnackBar(
+            //   SnackBar(
+            //     content: Text('Seleccionaste: $nombre'),
+            //     duration: const Duration(seconds: 1),
+            //   ),
+            // );
 
             await TtsService.speak(nombre);
             

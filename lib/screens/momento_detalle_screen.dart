@@ -68,7 +68,7 @@ class _MomentoDetalleScreenState extends State<MomentoDetalleScreen> {
           children: [
             Expanded(
               child: Text(
-                '${widget.momento.toUpperCase()}',
+                widget.momento.toUpperCase(),
                 style: const TextStyle(fontSize: 18),
                 overflow: TextOverflow.ellipsis,
               ),

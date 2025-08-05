@@ -1,6 +1,8 @@
 // import 'package:autismo_app/screens/home_screen.dart';
 // import 'package:autismo_app/services/tts_service.dart';
-import 'package:autismo_app/screens/seleccionar_voz_screen.dart';
+import 'package:autismo_app/screens/home_screen.dart';
+// import 'package:autismo_app/screens/seleccionar_voz_screen.dart';
+import 'package:autismo_app/services/tts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,6 +33,28 @@ class _GeneroScreenState extends State<GeneroScreen> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('genero_nino', genero);
 
+    // Obtenenemos la 3ra voz del género seleccionado
+    final voces = TtsService.vocesSeleccionadas[genero];
+    if (voces != null && voces.length >= 3) {
+      final vozPreSeleccionada = voces[2];
+
+      // Guardamos la voz seleccionada
+      await prefs.setString('vozSeleccionada', vozPreSeleccionada['name']!);
+      await prefs.setString('vozLocale', vozPreSeleccionada['locale']!);
+      await TtsService.setVoiceByData(vozPreSeleccionada);
+    } else {
+      debugPrint("⚠️ No hay voces disponibles para el género: $genero");
+    }
+
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomeScreen()
+        ),
+      );
+    }
+
     // // Volver a configurar el TTS con el nuevo género
     // await TtsService.init(genero: genero);
 
@@ -48,12 +72,12 @@ class _GeneroScreenState extends State<GeneroScreen> {
     //   MaterialPageRoute(builder: (context) => const HomeScreen()),
     // );
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SeleccionarVozScreen(genero: genero),
-      ),
-    );
+    // Navigator.pushReplacement(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => SeleccionarVozScreen(genero: genero),
+    //   ),
+    // );
   }
 
   @override

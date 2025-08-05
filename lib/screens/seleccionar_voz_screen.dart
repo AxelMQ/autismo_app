@@ -74,6 +74,7 @@ class SeleccionarVozScreen extends StatelessWidget {
                             await TtsService.setVoiceByData(voz);
                             await _guardarVoz(voz);
                             Navigator.pushReplacement(
+                              // ignore: use_build_context_synchronously
                               context,
                               MaterialPageRoute(builder: (_) => const HomeScreen()),
                             );
