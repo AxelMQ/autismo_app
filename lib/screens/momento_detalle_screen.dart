@@ -110,7 +110,7 @@ class _MomentoDetalleScreenState extends State<MomentoDetalleScreen> {
                             padding: const EdgeInsets.all(8.0),
                             child: Opacity(
                               opacity: yaSeleccionada ? 0.75 : 1.0,
-                              child: Image.asset(ruta, height: 150, width: 150),
+                              child: Image.asset(ruta, height: 130, width: 130),
                             ),
                           ),
                         );
@@ -126,8 +126,8 @@ class _MomentoDetalleScreenState extends State<MomentoDetalleScreen> {
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: SizedBox(
-                            height: 150,
-                            width: 150,
+                            height: 130,
+                            width: 130,
                             child:
                                 orden == null
                                     ? const SizedBox()
