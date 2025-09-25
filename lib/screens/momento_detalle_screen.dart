@@ -1,19 +1,18 @@
+import 'package:autismo_app/models/actividad.dart';
 import 'package:autismo_app/services/tts_service.dart';
 import 'package:flutter/material.dart';
 
 class MomentoDetalleScreen extends StatefulWidget {
   final String genero;
   final String momento;
-  final Map<String, List<String>> actividades;
-  final Map<String, List<String>> textos;
-  final List<String> seleccionadas;
+  final Map<String, List<Actividad>> actividades;
+  final List<String> seleccionadas; 
 
   const MomentoDetalleScreen({
     super.key,
     required this.momento,
     required this.genero,
     required this.actividades,
-    required this.textos,
     required this.seleccionadas,
   });
 
@@ -35,12 +34,12 @@ class _MomentoDetalleScreenState extends State<MomentoDetalleScreen> {
     await TtsService.speak("¿Qué hiciste en la ${widget.momento}?");
   }
 
-  void seleccionarImagen(String ruta, int index) {
-    if (!seleccionadas.contains(ruta) && seleccionadas.length < 4) {
+  void seleccionarImagen(Actividad actividad) {
+    if (!seleccionadas.contains(actividad.ruta) && seleccionadas.length < 4) {
       setState(() {
-        seleccionadas.add(ruta);
+        seleccionadas.add(actividad.ruta);
       });
-      TtsService.speak(widget.textos[widget.momento]![index]);
+      TtsService.speak(actividad.texto); 
     }
   }
 
@@ -60,7 +59,6 @@ class _MomentoDetalleScreenState extends State<MomentoDetalleScreen> {
   @override
   Widget build(BuildContext context) {
     final actividadesDelMomento = widget.actividades[widget.momento]!;
-    // final textosDelMomento = widget.textos[widget.momento]!;
 
     return Scaffold(
       appBar: AppBar(
@@ -96,48 +94,45 @@ class _MomentoDetalleScreenState extends State<MomentoDetalleScreen> {
           const SizedBox(height: 25),
           Row(
             children: [
+              // Columna de imágenes de actividades
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children:
-                      actividadesDelMomento.asMap().entries.map((entry) {
-                        final index = entry.key;
-                        final ruta = entry.value;
-                        final yaSeleccionada = seleccionadas.contains(ruta);
-                        return GestureDetector(
-                          onTap: () => seleccionarImagen(ruta, index),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Opacity(
-                              opacity: yaSeleccionada ? 0.75 : 1.0,
-                              child: Image.asset(ruta, height: 130, width: 130),
-                            ),
-                          ),
-                        );
-                      }).toList(),
+                  children: actividadesDelMomento.map((actividad) {
+                    final yaSeleccionada = seleccionadas.contains(actividad.ruta);
+                    return GestureDetector(
+                      onTap: () => seleccionarImagen(actividad),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Opacity(
+                          opacity: yaSeleccionada ? 0.75 : 1.0,
+                          child: Image.asset(actividad.ruta, height: 130, width: 130),
+                        ),
+                      ),
+                    );
+                  }).toList(),
                 ),
               ),
+              // Columna de orden numérico
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children:
-                      actividadesDelMomento.map((ruta) {
-                        final orden = obtenerOrden(ruta);
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: SizedBox(
-                            height: 130,
-                            width: 130,
-                            child:
-                                orden == null
-                                    ? const SizedBox()
-                                    : Image.asset(
-                                      'assets/hacer/numeros/$orden.png',
-                                      fit: BoxFit.contain,
-                                    ),
-                          ),
-                        );
-                      }).toList(),
+                  children: actividadesDelMomento.map((actividad) {
+                    final orden = obtenerOrden(actividad.ruta);
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        height: 130,
+                        width: 130,
+                        child: orden == null
+                            ? const SizedBox()
+                            : Image.asset(
+                                'assets/hacer/numeros/$orden.png',
+                                fit: BoxFit.contain,
+                              ),
+                      ),
+                    );
+                  }).toList(),
                 ),
               ),
             ],

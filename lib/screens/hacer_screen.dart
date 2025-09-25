@@ -1,7 +1,10 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:autismo_app/data/actividad_data.dart';
+import 'package:autismo_app/models/actividad.dart';
 import 'package:autismo_app/screens/momento_detalle_screen.dart';
 import 'package:autismo_app/services/tts_service.dart';
+import 'package:autismo_app/widgets/estadistica_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,78 +32,17 @@ class _HacerScreenState extends State<HacerScreen> {
     super.dispose();
   }
 
-  final Map<String, List<String>> textosActividadesBoy = {
-    'mañana': ['Me desperté', 'Me vestí', 'Me cepillé los dientes', 'Desayuné'],
-    'tarde': ['Almorcé', 'Fui al colegio', 'Hice tarea', 'Jugué'],
-    'noche': ['Cené', 'Leí un libro', 'Vi la televisión', 'Me acosté'],
-  };
-
-  final Map<String, List<String>> textosActividadesGirl = {
-    'mañana': ['Me desperté', 'Me vestí', 'Me cepillé los dientes', 'Desayuné'],
-    'tarde': ['Almorcé', 'Fui al colegio', 'Hice tarea', 'Jugué'],
-    'noche': ['Cené', 'Leí un libro', 'Vi la televisión', 'Me acosté'],
-  };
-
-  final Map<String, List<String>> actividadesBoy = {
-    'mañana': [
-      'assets/hacer/boy/manana/desperte.png',
-      'assets/hacer/boy/manana/vesti.png',
-      'assets/hacer/boy/manana/dientes.png',
-      'assets/hacer/boy/manana/desayune.png',
-    ],
-    'tarde': [
-      'assets/hacer/boy/tarde/almorce.png',
-      'assets/hacer/boy/tarde/colegio.png',
-      'assets/hacer/boy/tarde/boy_tarea.png',
-      'assets/hacer/boy/tarde/jugue.png',
-    ],
-    'noche': [
-      'assets/hacer/boy/noche/cene.png',
-      'assets/hacer/boy/noche/libro.png',
-      'assets/hacer/boy/noche/tele.png',
-      'assets/hacer/boy/noche/acoste.jpg',
-    ],
-  };
-
-  final Map<String, List<String>> actividadesGirl = {
-    'mañana': [
-      'assets/hacer/girl/manana/desperte.png',
-      'assets/hacer/girl/manana/vesti.png',
-      'assets/hacer/girl/manana/dientes.png',
-      'assets/hacer/girl/manana/desayune.png',
-    ],
-    'tarde': [
-      'assets/hacer/girl/tarde/almorce.png',
-      'assets/hacer/girl/tarde/colegio.png',
-      'assets/hacer/girl/tarde/tarea.png',
-      'assets/hacer/girl/tarde/jugue.png',
-    ],
-    'noche': [
-      'assets/hacer/girl/noche/cene.png',
-      'assets/hacer/girl/noche/libro.png',
-      'assets/hacer/girl/noche/tele.png',
-      'assets/hacer/girl/noche/acoste.jpg',
-    ],
-  };
   void seleccionarImagen(String ruta) {
-    if (momentoSeleccionado == null || genero == null) return; // null
+    if (momentoSeleccionado == null || genero == null) return;
 
     final momento = momentoSeleccionado!.toLowerCase();
-
     final actividades =
         genero == 'niño' ? actividadesBoy[momento]! : actividadesGirl[momento]!;
 
-    final textos =
-        genero == 'niño'
-            ? textosActividadesBoy[momento]
-            : textosActividadesGirl[momento];
-
-    if (textos == null) return;
-
-    final index = actividades.indexOf(ruta);
-    if (index == -1 || index >= textos.length) return;
-
-    final texto = textos[index];
+    final actividad = actividades.firstWhere(
+      (a) => a.ruta == ruta,
+      orElse: () => Actividad(texto: 'Desconocido', ruta: ruta),
+    );
 
     seleccionPorDia.putIfAbsent(momento, () => []);
 
@@ -110,7 +52,7 @@ class _HacerScreenState extends State<HacerScreen> {
         seleccionPorDia[momento]!.add(ruta);
       });
 
-      TtsService.speak(texto); // 🔊 Decir el texto correspondiente
+      TtsService.speak(actividad.texto); // 🔊 ahora usamos el modelo
     }
   }
 
@@ -146,9 +88,9 @@ class _HacerScreenState extends State<HacerScreen> {
           if (genero == null) return;
 
           final actividades =
-              genero == 'niño' ? actividadesBoy : actividadesGirl;
-          final textos =
-              genero == 'niño' ? textosActividadesBoy : textosActividadesGirl;
+              genero == 'niño'
+                  ? actividadesBoy[momento.toLowerCase()]!
+                  : actividadesGirl[momento.toLowerCase()]!;
 
           final seleccionadas = seleccionPorDia[momento.toLowerCase()] ?? [];
 
@@ -159,8 +101,7 @@ class _HacerScreenState extends State<HacerScreen> {
                   (_) => MomentoDetalleScreen(
                     genero: genero!,
                     momento: momento.toLowerCase(),
-                    actividades: actividades,
-                    textos: textos,
+                    actividades: {momento.toLowerCase(): actividades},
                     seleccionadas: seleccionadas,
                   ),
             ),
@@ -211,6 +152,50 @@ class _HacerScreenState extends State<HacerScreen> {
             _buildMomentoDelDia("Noche", Icons.nights_stay, Colors.indigo),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.insights),
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            isScrollControlled: true,
+            builder:
+                (_) => Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 50,
+                        height: 5,
+                        margin: const EdgeInsets.only(bottom: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      const Text(
+                        "📊 Estadísticas del día",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      EstadisticasChart(
+                        seleccionPorDia: seleccionPorDia,
+                        actividadesBoy: actividadesBoy,
+                        actividadesGirl: actividadesGirl,
+                        genero: genero ?? 'niño', // fallback por si es null
+                      ),
+                    ],
+                  ),
+                ),
+          );
+        },
       ),
     );
   }
