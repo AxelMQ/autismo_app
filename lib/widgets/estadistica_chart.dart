@@ -41,27 +41,25 @@ class EstadisticasChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            MomentoChart(
-              titulo: 'Mañana',
-              conteo: _conteoPorMomento('Mañana'),
-              color: Colors.orange,
-            ),
-            MomentoChart(
-              titulo: 'Tarde',
-              conteo: _conteoPorMomento('Tarde'),
-              color: Colors.blue,
-            ),
-            MomentoChart(
-              titulo: 'Noche',
-              conteo: _conteoPorMomento('Noche'),
-              color: Colors.indigo,
-            ),
-          ],
-        ),
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          MomentoChart(
+            titulo: 'Mañana',
+            conteo: _conteoPorMomento('Mañana'),
+            color: Colors.orange,
+          ),
+          MomentoChart(
+            titulo: 'Tarde',
+            conteo: _conteoPorMomento('Tarde'),
+            color: Colors.blue,
+          ),
+          MomentoChart(
+            titulo: 'Noche',
+            conteo: _conteoPorMomento('Noche'),
+            color: Colors.indigo,
+          ),
+        ],
       ),
     );
   }

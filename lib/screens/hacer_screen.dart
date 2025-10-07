@@ -5,6 +5,7 @@ import 'package:autismo_app/models/actividad.dart';
 import 'package:autismo_app/screens/momento_detalle_screen.dart';
 import 'package:autismo_app/services/tts_service.dart';
 import 'package:autismo_app/widgets/estadistica_chart.dart';
+import 'package:autismo_app/widgets/estadistica_semanal_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -72,6 +73,53 @@ class _HacerScreenState extends State<HacerScreen> {
     setState(() {
       genero = prefs.getString('genero_nino');
     });
+  }
+
+  // Simula una semana (Lunes..Domingo) usando tus actividades existentes.
+  // No modifica seleccionPorDia; es solo datos de prueba.
+  Map<String, Map<String, List<String>>> _simularSemana() {
+    final days = [
+      'Lunes',
+      'Martes',
+      'Miércoles',
+      'Jueves',
+      'Viernes',
+      'Sábado',
+      'Domingo',
+    ];
+    final momentos = ['mañana', 'tarde', 'noche'];
+
+    final actividadesMap = genero == 'niño' ? actividadesBoy : actividadesGirl;
+
+    final Map<String, Map<String, List<String>>> semana = {};
+
+    for (var di = 0; di < days.length; di++) {
+      final dayName = days[di];
+      semana[dayName] = {};
+      for (var m in momentos) {
+        final lista = actividadesMap[m] ?? [];
+        final rutas = <String>[];
+
+        // patrón determinista para la demo: 1..3 actividades según el índice del día
+        final pickCount = 1 + (di % 3); // 1,2,3 repetido
+        for (var i = 0; i < pickCount; i++) {
+          if (lista.isEmpty) break;
+          final idx = (di + i) % lista.length;
+          rutas.add(lista[idx].ruta);
+        }
+
+        semana[dayName]![m] = rutas;
+      }
+    }
+
+    // opcional: inyectar lo que el usuario seleccionó hoy (si hay) en Lunes para que la demo se parezca a lo real
+    if (seleccionPorDia.isNotEmpty) {
+      // guardo la "mañana" del primer día con los seleccionados actuales (solo como ejemplo)
+      final firstDay = days[0];
+      semana[firstDay]!['mañana'] = List.from(seleccionPorDia['mañana'] ?? []);
+    }
+
+    return semana;
   }
 
   Widget _buildMomentoDelDia(String momento, IconData icon, Color color) {
@@ -158,42 +206,78 @@ class _HacerScreenState extends State<HacerScreen> {
         onPressed: () {
           showModalBottomSheet(
             context: context,
+            isScrollControlled: true,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             ),
-            isScrollControlled: true,
-            builder:
-                (_) => Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 50,
-                        height: 5,
-                        margin: const EdgeInsets.only(bottom: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(10),
+            builder: (_) {
+              return FractionallySizedBox(
+                heightFactor: 0.78, // 78% de la pantalla
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: DefaultTabController(
+                    length: 2,
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 50,
+                          height: 5,
+                          margin: const EdgeInsets.only(bottom: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
-                      ),
-                      const Text(
-                        "📊 Estadísticas del día",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                        const TabBar(
+                          labelColor: Colors.black,
+                          tabs: [Tab(text: 'Hoy'), Tab(text: 'Semana')],
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                      EstadisticasChart(
-                        seleccionPorDia: seleccionPorDia,
-                        actividadesBoy: actividadesBoy,
-                        actividadesGirl: actividadesGirl,
-                        genero: genero ?? 'niño', // fallback por si es null
-                      ),
-                    ],
+                        const SizedBox(height: 8),
+
+                        Expanded(
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return SizedBox(
+                                height: constraints.maxHeight,
+                                child: TabBarView(
+                                  children: [
+                                    // Tab 1: gráfico diario
+                                    SingleChildScrollView(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: EstadisticasChart(
+                                          seleccionPorDia: seleccionPorDia,
+                                          actividadesBoy: actividadesBoy,
+                                          actividadesGirl: actividadesGirl,
+                                          genero: genero ?? 'niño',
+                                        ),
+                                      ),
+                                    ),
+
+                                    // Tab 2: gráfico semanal
+                                    SingleChildScrollView(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: EstadisticaSemanalChart(
+                                          semana: _simularSemana(),
+                                          actividadesBoy: actividadesBoy,
+                                          actividadesGirl: actividadesGirl,
+                                          genero: genero ?? 'niño',
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
+              );
+            },
           );
         },
       ),
