@@ -88,12 +88,6 @@ class _FamiliaScreenState extends State<FamiliaScreen> {
           InkWell(
             onTap: () async {
               await TtsService.speak(nombre);
-              // ScaffoldMessenger.of(context).showSnackBar(
-              //   SnackBar(
-              //     content: Text('Seleccionaste: $nombre'),
-              //     duration: Duration(seconds: 1),
-              //   ),
-              // );
             },
             child: Container(
               width: 145,
