@@ -1,5 +1,6 @@
 import 'package:autismo_app/services/tts_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -10,14 +11,50 @@ class EmocionesScreen extends StatefulWidget {
   State<EmocionesScreen> createState() => _EmocionesScreenState();
 }
 
-class _EmocionesScreenState extends State<EmocionesScreen> {
+class _EmocionesScreenState extends State<EmocionesScreen> with TickerProviderStateMixin {
   bool? isBoy; // true = niño, false = niña
   final FlutterTts flutterTts = FlutterTts();
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
 
   @override
   void initState() {
     super.initState();
     _cargarGeneroGuardado();
+    _setupAnimations();
+  }
+
+  void _setupAnimations() {
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 1500), // Consistente con otras pantallas
+      vsync: this,
+    );
+    
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: const Interval(0.0, 0.7, curve: Curves.easeInOut),
+    ));
+    
+    _scaleAnimation = Tween<double>(
+      begin: 0.9,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: const Interval(0.1, 0.8, curve: Curves.easeOut),
+    ));
+    
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    TtsService.stop(); // Liberar el TTS al cerrar la pantalla
+    super.dispose();
   }
 
   Future<void> _cargarGeneroGuardado() async {
@@ -94,14 +131,11 @@ class _EmocionesScreenState extends State<EmocionesScreen> {
     },
   };
 
-  @override
-  void dispose() {
-    TtsService.stop(); // Liberar el TTS al cerrar la pantalla
-    super.dispose();
-  }
 
   Future<void> _speak(String text) async {
     try {
+      // Feedback háptico al tocar emoción
+      HapticFeedback.lightImpact();
       await TtsService.speak(text);
     } catch (e) {
       debugPrint('Error en TTS: $e');
@@ -117,43 +151,127 @@ class _EmocionesScreenState extends State<EmocionesScreen> {
     final emociones = isBoy! ? emocionesBoy : emocionesGirl;
 
     return Scaffold(
+      backgroundColor: const Color(0xFFFFF8E1), // Consistente con otras pantallas
       appBar: AppBar(
-        title: const Text('Emociones'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: AnimatedBuilder(
+          animation: _fadeAnimation,
+          builder: (context, child) {
+            return Opacity(
+              opacity: _fadeAnimation.value,
+              child: const Text(
+                'Emociones',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF2C3E50),
+                  letterSpacing: 1.2,
+                ),
+              ),
+            );
+          },
+        ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, color: Color(0xFF2C3E50)),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
           // Botón de selección niño/niña
-          IconButton(
-            icon: Icon(isBoy! ? Icons.face : Icons.face_3),
-            onPressed: () {
-              // Funcionalidad futura: cambio de género
+          AnimatedBuilder(
+            animation: _fadeAnimation,
+            builder: (context, child) {
+              return Opacity(
+                opacity: _fadeAnimation.value,
+                child: IconButton(
+                  icon: Icon(
+                    isBoy! ? Icons.face : Icons.face_3,
+                    color: const Color(0xFF2C3E50),
+                  ),
+                  onPressed: () {
+                    // Funcionalidad futura: cambio de género
+                  },
+                ),
+              );
             },
           ),
         ],
+        centerTitle: true,
       ),
-      body: GridView.builder(
-        padding: const EdgeInsets.all(16),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          childAspectRatio: 1.0,
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: AnimatedBuilder(
+            animation: _animationController,
+            builder: (context, child) {
+              return FadeTransition(
+                opacity: _fadeAnimation,
+                child: ScaleTransition(
+                  scale: _scaleAnimation,
+                  child: _buildResponsiveGrid(context, emociones),
+                ),
+              );
+            },
+          ),
         ),
-        itemCount: emociones.length,
-        itemBuilder: (context, index) {
-          final key = emociones.keys.elementAt(index);
-          final emocion = emociones[key]!;
-          return _buildEmocionCard(
-            context,
-            key,
-            emocion['emoji'] as String,
-            emocion['color'] as Color,
-            emocion['imagen'] as String,
-          );
-        },
       ),
+    );
+  }
+
+  Widget _buildResponsiveGrid(BuildContext context, Map<String, Map<String, dynamic>> emociones) {
+    final screenSize = MediaQuery.of(context).size;
+    final screenWidth = screenSize.width;
+    
+    // Responsive design para diferentes tipos de pantallas
+    final isTablet = screenWidth > 600;
+    final isSmallPhone = screenWidth < 360;
+    final isLargePhone = screenWidth > 400 && screenWidth <= 600;
+    
+    // Configuración del grid según dispositivo
+    int crossAxisCount;
+    double childAspectRatio;
+    double spacing;
+    
+    if (isTablet) {
+      crossAxisCount = 3;
+      childAspectRatio = 1.1;
+      spacing = 20;
+    } else if (isLargePhone) {
+      crossAxisCount = 2;
+      childAspectRatio = 1.0;
+      spacing = 18;
+    } else if (isSmallPhone) {
+      crossAxisCount = 2;
+      childAspectRatio = 0.9;
+      spacing = 12;
+    } else {
+      crossAxisCount = 2;
+      childAspectRatio = 1.0;
+      spacing = 16;
+    }
+    
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount,
+        crossAxisSpacing: spacing,
+        mainAxisSpacing: spacing,
+        childAspectRatio: childAspectRatio,
+      ),
+      itemCount: emociones.length,
+      itemBuilder: (context, index) {
+        final key = emociones.keys.elementAt(index);
+        final emocion = emociones[key]!;
+        return _buildEmocionCard(
+          context,
+          key,
+          emocion['emoji'] as String,
+          emocion['color'] as Color,
+          emocion['imagen'] as String,
+          index,
+        );
+      },
     );
   }
 
@@ -163,42 +281,100 @@ class _EmocionesScreenState extends State<EmocionesScreen> {
     String emoji,
     Color color,
     String imagenPath,
+    int index,
   ) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      color: color,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: () {
-          _speak(nombre);
-        },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Mostrar imagen si existe, sino mostrar emoji
-            imagenPath.isNotEmpty
-                ? Image.asset(
-                  imagenPath,
-                  width: 100,
-                  height: 100,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Text(emoji, style: const TextStyle(fontSize: 50));
-                  },
-                )
-                : Text(emoji, style: const TextStyle(fontSize: 50)),
-            const SizedBox(height: 8),
-            Text(
-              nombre,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+    return AnimatedBuilder(
+      animation: _animationController,
+      builder: (context, child) {
+        final delay = index * 50; // Animación escalonada más rápida
+        final animationValue = Curves.easeInOut.transform(
+          (_animationController.value - (delay / 1000)).clamp(0.0, 1.0),
+        );
+        
+        // Asegurar que todas las emociones alcancen opacidad completa
+        final finalOpacity = animationValue > 0.8 ? 1.0 : animationValue;
+        
+        return Transform.translate(
+          offset: Offset(0, 30 * (1 - animationValue)),
+          child: Opacity(
+            opacity: finalOpacity,
+            child: Material(
+              elevation: 8,
+              borderRadius: BorderRadius.circular(24),
+              shadowColor: color.withValues(alpha: 0.3),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(24),
+                onTap: () => _speak(nombre),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: color, // Color sólido sin gradiente
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      width: 2,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      // Imagen o emoji con animación
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        child: imagenPath.isNotEmpty
+                            ? Image.asset(
+                              imagenPath,
+                              width: 80,
+                              height: 80,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Text(
+                                  emoji,
+                                  style: const TextStyle(fontSize: 50),
+                                );
+                              },
+                            )
+                            : Text(
+                              emoji,
+                              style: const TextStyle(fontSize: 50),
+                            ),
+                      ),
+                      // Texto con sombra
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Text(
+                          nombre,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 1.0,
+                            shadows: [
+                              Shadow(
+                                offset: Offset(0, 2),
+                                blurRadius: 4,
+                                color: Colors.black26,
+                              ),
+                            ],
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      // Indicador de interacción
+                      Container(
+                        width: 6,
+                        height: 6,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.6),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
