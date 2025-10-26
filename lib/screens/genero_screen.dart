@@ -1,7 +1,4 @@
-// import 'package:autismo_app/screens/home_screen.dart';
-// import 'package:autismo_app/services/tts_service.dart';
 import 'package:autismo_app/screens/home_screen.dart';
-// import 'package:autismo_app/screens/seleccionar_voz_screen.dart';
 import 'package:autismo_app/services/tts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -55,29 +52,6 @@ class _GeneroScreenState extends State<GeneroScreen> {
       );
     }
 
-    // // Volver a configurar el TTS con el nuevo género
-    // await TtsService.init(genero: genero);
-
-    // // Hablar un mensaje corto de bienvenida
-    // await TtsService.speak("Hola, soy $genero");
-
-    // // Actualizar el estado
-    // setState(() {
-    //   generoGuardado = genero;
-    // });
-
-    // Navigator.pushReplacement(
-    //   // ignore: use_build_context_synchronously
-    //   context,
-    //   MaterialPageRoute(builder: (context) => const HomeScreen()),
-    // );
-
-    // Navigator.pushReplacement(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => SeleccionarVozScreen(genero: genero),
-    //   ),
-    // );
   }
 
   @override
@@ -86,8 +60,6 @@ class _GeneroScreenState extends State<GeneroScreen> {
       backgroundColor: const Color(0xFFF6F9FC),
       appBar: AppBar(
         title: const Text("¿Quién eres?"),
-        // backgroundColor: const Color(0xFF6C63FF),
-        // foregroundColor: Colors.white,
         elevation: 0,
       ),
       body: Padding(
