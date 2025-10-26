@@ -8,9 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main () async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // final prefs = await SharedPreferences.getInstance();
-  // final genero = prefs.getString('genero_nino') ?? 'niño'; // Por defecto 'niño'
-
   await TtsService.init(); 
   runApp(const MyApp());
 }
@@ -23,14 +20,33 @@ class MyApp extends StatelessWidget {
       final prefs = await SharedPreferences.getInstance();
       final generoNino = prefs.getString('genero_nino');
 
-      if (generoNino == null) {
+      // Validar que el género sea válido
+      if (generoNino == null || (generoNino != 'niño' && generoNino != 'niña')) {
+        debugPrint("🔍 No hay género guardado o es inválido: $generoNino");
+        // Opción 1: Mostrar pantalla de selección (actual)
         return GeneroScreen();
+        
+        // Opción 2: Género por defecto (descomenta si quieres)
+        // await prefs.setString('genero_nino', 'niño');
+        // return HomeScreen();
       } else {
+        debugPrint("✅ Género guardado encontrado: $generoNino");
         return HomeScreen();
       }
     } catch (e) {
-      // print("Error en _decidirPantallaInicial: $e");
-      return Center(child: Text("Error al cargar datos"));
+      debugPrint("❌ Error en _decidirPantallaInicial: $e");
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error, size: 50, color: Colors.red),
+            SizedBox(height: 16),
+            Text("Error al cargar datos", style: TextStyle(fontSize: 18)),
+            SizedBox(height: 8),
+            Text("Reinicia la aplicación", style: TextStyle(fontSize: 14, color: Colors.grey)),
+          ],
+        ),
+      );
     }
   }
 
