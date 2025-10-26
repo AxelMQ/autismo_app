@@ -1,5 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 
 class DataService {
   // Claves para SharedPreferences
@@ -31,9 +32,9 @@ class DataService {
       // Guardar actualizado
       await prefs.setString(key, json.encode(actividades));
       
-      print('✅ Actividad guardada: $texto en $momento');
+          debugPrint('✅ Actividad guardada: $texto en $momento');
     } catch (e) {
-      print('❌ Error guardando actividad: $e');
+      debugPrint('❌ Error guardando actividad: $e');
     }
   }
   
@@ -47,7 +48,7 @@ class DataService {
       
       return actividades.cast<Map<String, dynamic>>();
     } catch (e) {
-      print('❌ Error obteniendo actividades: $e');
+      debugPrint('❌ Error obteniendo actividades: $e');
       return [];
     }
   }
@@ -70,7 +71,7 @@ class DataService {
       
       return semana;
     } catch (e) {
-      print('❌ Error obteniendo semana: $e');
+      debugPrint('❌ Error obteniendo semana: $e');
       return {};
     }
   }
@@ -90,7 +91,7 @@ class DataService {
       
       return conteo;
     } catch (e) {
-      print('❌ Error obteniendo estadísticas: $e');
+      debugPrint('❌ Error obteniendo estadísticas: $e');
       return {};
     }
   }
@@ -109,12 +110,12 @@ class DataService {
           
           if (hoy.difference(fecha).inDays > 30) {
             await prefs.remove(key);
-            print('🗑️ Datos antiguos eliminados: $fechaStr');
+            debugPrint('🗑️ Datos antiguos eliminados: $fechaStr');
           }
         }
       }
     } catch (e) {
-      print('❌ Error limpiando datos: $e');
+      debugPrint('❌ Error limpiando datos: $e');
     }
   }
 }
