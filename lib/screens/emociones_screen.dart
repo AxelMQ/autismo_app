@@ -128,17 +128,7 @@ class _EmocionesScreenState extends State<EmocionesScreen> {
           IconButton(
             icon: Icon(isBoy! ? Icons.face : Icons.face_3),
             onPressed: () {
-              // setState(() {
-              //   isBoy = !isBoy!;
-              // });
-              // ScaffoldMessenger.of(context).showSnackBar(
-              //   SnackBar(
-              //     content: Text(
-              //       'Mostrando emociones para ${isBoy! ? 'niño' : 'niña'}',
-              //     ),
-              //     duration: const Duration(milliseconds: 800),
-              //   ),
-              // );
+              // Funcionalidad futura: cambio de género
             },
           ),
         ],
@@ -181,13 +171,6 @@ class _EmocionesScreenState extends State<EmocionesScreen> {
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: () {
-          // ScaffoldMessenger.of(context).showSnackBar(
-          //   SnackBar(
-          //     content: Text('Seleccionaste: $nombre'),
-          //     duration: const Duration(seconds: 1),
-          //   ),
-          // );
-          // TTS
           _speak(nombre);
         },
         child: Column(
