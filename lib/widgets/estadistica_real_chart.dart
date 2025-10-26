@@ -33,7 +33,7 @@ class _EstadisticaRealChartState extends State<EstadisticaRealChart> {
 
     try {
       // Cargar estadisticas reales de cada momento
-      final manana = await DataService.obtenerEstadisticasPorMomento('manana');
+      final manana = await DataService.obtenerEstadisticasPorMomento('mañana');
       final tarde = await DataService.obtenerEstadisticasPorMomento('tarde');
       final noche = await DataService.obtenerEstadisticasPorMomento('noche');
 
@@ -81,7 +81,7 @@ class _EstadisticaRealChartState extends State<EstadisticaRealChart> {
           
           // Graficos de estadisticas reales
           MomentoChart(
-            titulo: 'Manana',
+            titulo: 'Mañana',
             conteo: estadisticasManana,
             color: Colors.orange,
           ),

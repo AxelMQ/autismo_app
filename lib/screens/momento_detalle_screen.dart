@@ -92,10 +92,12 @@ class _MomentoDetalleScreenState extends State<MomentoDetalleScreen> {
           },
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
           Text(
             '¿Qué hiciste en la ${widget.momento}?',
             style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
@@ -147,7 +149,32 @@ class _MomentoDetalleScreenState extends State<MomentoDetalleScreen> {
               ),
             ],
           ),
-        ],
+            const SizedBox(height: 20),
+            // Indicador de progreso
+            if (seleccionadas.isNotEmpty)
+              Card(
+                color: Colors.green.withOpacity(0.1),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.check_circle, color: Colors.green[600]),
+                      const SizedBox(width: 8),
+                      Text(
+                        '${seleccionadas.length} actividad${seleccionadas.length == 1 ? '' : 'es'} seleccionada${seleccionadas.length == 1 ? '' : 's'}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green[700],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
