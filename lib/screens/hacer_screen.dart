@@ -4,8 +4,9 @@ import 'package:autismo_app/data/actividad_data.dart';
 import 'package:autismo_app/models/actividad.dart';
 import 'package:autismo_app/screens/momento_detalle_screen.dart';
 import 'package:autismo_app/services/tts_service.dart';
-import 'package:autismo_app/widgets/estadistica_chart.dart';
+import 'package:autismo_app/services/data_service.dart';
 import 'package:autismo_app/widgets/estadistica_semanal_chart.dart';
+import 'package:autismo_app/widgets/estadistica_real_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -53,7 +54,15 @@ class _HacerScreenState extends State<HacerScreen> {
         seleccionPorDia[momento]!.add(ruta);
       });
 
-      TtsService.speak(actividad.texto); // 🔊 ahora usamos el modelo
+      // 🔊 Reproducir audio
+      TtsService.speak(actividad.texto);
+      
+      // 💾 Guardar actividad en persistencia
+      DataService.guardarActividad(
+        momento: momento,
+        ruta: ruta,
+        texto: actividad.texto,
+      );
     }
   }
 
@@ -241,20 +250,17 @@ class _HacerScreenState extends State<HacerScreen> {
                                 height: constraints.maxHeight,
                                 child: TabBarView(
                                   children: [
-                                    // Tab 1: gráfico diario
+                                    // Tab 1: estadísticas reales del día
                                     SingleChildScrollView(
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
-                                        child: EstadisticasChart(
-                                          seleccionPorDia: seleccionPorDia,
-                                          actividadesBoy: actividadesBoy,
-                                          actividadesGirl: actividadesGirl,
+                                        child: EstadisticaRealChart(
                                           genero: genero ?? 'niño',
                                         ),
                                       ),
                                     ),
 
-                                    // Tab 2: gráfico semanal
+                                    // Tab 2: gráfico semanal (mantenemos simulado por ahora)
                                     SingleChildScrollView(
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),

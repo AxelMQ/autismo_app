@@ -50,10 +50,12 @@ lib/
 │   ├── frutas_screen.dart      # Frutas por color
 │   └── momento_detalle_screen.dart # Detalle de actividades
 ├── services/                   # Servicios
-│   └── tts_service.dart        # Servicio de texto a voz
+│   ├── tts_service.dart        # Servicio de texto a voz
+│   └── data_service.dart       # Servicio de persistencia de datos
 └── widgets/                    # Widgets personalizados
     ├── estadistica_chart.dart  # Gráfico de estadísticas
     ├── estadistica_semanal_chart.dart # Gráfico semanal
+    ├── estadistica_real_chart.dart # Gráfico con datos reales
     └── momento_chart.dart      # Gráfico por momento
 ```
 
@@ -161,6 +163,8 @@ dev_dependencies:
 - Gráficos de barras interactivos
 - Análisis diario y semanal
 - Seguimiento de progreso
+- **Persistencia real de datos** - Las actividades se guardan automáticamente
+- **Estadísticas reales** - Basadas en actividades reales del usuario
 
 ## 🎨 Diseño y UX
 
@@ -201,6 +205,8 @@ dev_dependencies:
 ## 🚀 Roadmap y Mejoras Futuras
 
 ### Corto Plazo
+- [x] **Implementar persistencia de datos** - Las actividades ahora se guardan automáticamente
+- [x] **Estadísticas reales** - Reemplazadas las simuladas por datos reales del usuario
 - [ ] Limpiar código comentado
 - [ ] Mejorar manejo de errores
 - [ ] Optimizar carga de imágenes
