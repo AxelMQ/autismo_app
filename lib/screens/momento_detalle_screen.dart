@@ -1,5 +1,6 @@
 import 'package:autismo_app/models/actividad.dart';
 import 'package:autismo_app/services/tts_service.dart';
+import 'package:autismo_app/services/data_service.dart';
 import 'package:flutter/material.dart';
 
 class MomentoDetalleScreen extends StatefulWidget {
@@ -39,7 +40,16 @@ class _MomentoDetalleScreenState extends State<MomentoDetalleScreen> {
       setState(() {
         seleccionadas.add(actividad.ruta);
       });
-      TtsService.speak(actividad.texto); 
+      
+      // 🔊 Reproducir audio
+      TtsService.speak(actividad.texto);
+      
+      // 💾 Guardar actividad en persistencia
+      DataService.guardarActividad(
+        momento: widget.momento,
+        ruta: actividad.ruta,
+        texto: actividad.texto,
+      );
     }
   }
 
