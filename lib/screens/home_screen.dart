@@ -185,15 +185,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  const Color(0xFF2C3E50).withOpacity(0.1),
-                                  const Color(0xFF3498DB).withOpacity(0.1),
+                                  const Color(0xFF2C3E50).withValues(alpha: 0.1),
+                                  const Color(0xFF3498DB).withValues(alpha: 0.1),
                                 ],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ),
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
-                                color: const Color(0xFF2C3E50).withOpacity(0.2),
+                                color: const Color(0xFF2C3E50).withValues(alpha: 0.2),
                                 width: 1,
                               ),
                             ),
@@ -258,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               child: Material(
                 elevation: 8,
                 borderRadius: BorderRadius.circular(24),
-                shadowColor: color.withOpacity(0.3),
+                shadowColor: color.withValues(alpha: 0.3),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(24),
                   onTap: destination != null
@@ -275,12 +275,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         end: Alignment.bottomRight,
                         colors: [
                           color,
-                          color.withOpacity(0.8),
+                          color.withValues(alpha: 0.8),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(24),
                       border: Border.all(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         width: 2,
                       ),
                     ),
@@ -326,7 +326,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           width: 8,
                           height: 8,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.6),
+                            color: Colors.white.withValues(alpha: 0.6),
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -347,10 +347,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       width: 80,
       height: 80,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.2),
+        color: Colors.white.withValues(alpha: 0.2),
         shape: BoxShape.circle,
         border: Border.all(
-          color: Colors.white.withOpacity(0.3),
+          color: Colors.white.withValues(alpha: 0.3),
           width: 2,
         ),
       ),
