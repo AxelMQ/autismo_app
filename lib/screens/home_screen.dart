@@ -6,6 +6,7 @@ import 'package:autismo_app/screens/familia_screen.dart';
 import 'package:autismo_app/screens/genero_screen.dart';
 import 'package:autismo_app/screens/hacer_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -24,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 1500), // Más lento para niños
       vsync: this,
     );
     
@@ -33,15 +34,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       end: 1.0,
     ).animate(CurvedAnimation(
       parent: _animationController,
-      curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
+      curve: const Interval(0.0, 0.7, curve: Curves.easeInOut), // Más suave
     ));
     
     _scaleAnimation = Tween<double>(
-      begin: 0.8,
+      begin: 0.9, // Menos dramático
       end: 1.0,
     ).animate(CurvedAnimation(
       parent: _animationController,
-      curve: const Interval(0.2, 0.8, curve: Curves.elasticOut),
+      curve: const Interval(0.1, 0.8, curve: Curves.easeOut), // Sin rebote
     ));
     
     _animationController.forward();
@@ -106,18 +107,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ],
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: AnimatedBuilder(
-          animation: _animationController,
-          builder: (context, child) {
-            return FadeTransition(
-              opacity: _fadeAnimation,
-              child: ScaleTransition(
-                scale: _scaleAnimation,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: AnimatedBuilder(
+            animation: _animationController,
+            builder: (context, child) {
+              return FadeTransition(
+                opacity: _fadeAnimation,
+                child: ScaleTransition(
+                  scale: _scaleAnimation,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
                     const SizedBox(height: 20),
                     // Primera fila de botones
                     _buildButtonRow(
@@ -209,11 +211,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       },
                     ),
                     const SizedBox(height: 20),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
@@ -241,12 +244,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return AnimatedBuilder(
       animation: _animationController,
       builder: (context, child) {
-        final animationValue = Curves.easeOut.transform(
+        final animationValue = Curves.easeInOut.transform(
           (_animationController.value - (delay / 1000)).clamp(0.0, 1.0),
         );
         
         return Transform.translate(
-          offset: Offset(0, 50 * (1 - animationValue)),
+          offset: Offset(0, 30 * (1 - animationValue)), // Movimiento más sutil
           child: Opacity(
             opacity: animationValue,
             child: SizedBox(
@@ -259,7 +262,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(24),
                   onTap: destination != null
-                      ? () => _navigateToScreen(context, destination)
+                      ? () {
+                          // Feedback háptico sutil
+                          HapticFeedback.lightImpact();
+                          _navigateToScreen(context, destination);
+                        }
                       : null,
                   child: Container(
                     decoration: BoxDecoration(
@@ -356,15 +363,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   void _navigateToScreen(BuildContext context, Widget screen) {
-    // Animación de transición suave
+    // Animación de transición suave y predecible para niños
     Navigator.push(
       context,
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => screen,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(1.0, 0.0);
+          const begin = Offset(0.0, 1.0); // Desde abajo (más natural)
           const end = Offset.zero;
-          const curve = Curves.easeInOut;
+          const curve = Curves.easeInOut; // Suave y predecible
 
           var tween = Tween(begin: begin, end: end).chain(
             CurveTween(curve: curve),
@@ -372,10 +379,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
           return SlideTransition(
             position: animation.drive(tween),
-            child: child,
+            child: FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
           );
         },
-        transitionDuration: const Duration(milliseconds: 300),
+        transitionDuration: const Duration(milliseconds: 400), // Más lento para niños
       ),
     );
   }
