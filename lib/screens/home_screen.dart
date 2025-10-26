@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         : Size(150, 180);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
+      backgroundColor: const Color(0xFFFFF8E1),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -126,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         _buildCategoryButton(
                           context: context,
                           text: 'EMOCIONES',
-                          color: const Color(0xFFFF6B35),
+                          color: Colors.orange,
                           size: buttonSize,
                           destination: const EmocionesScreen(),
                           imagePath: 'assets/imgs/emociones.png',
@@ -135,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         _buildCategoryButton(
                           context: context,
                           text: 'COLORES',
-                          color: const Color(0xFF8E44AD),
+                          color: Colors.purple,
                           size: buttonSize,
                           destination: ColoresScreen(),
                           imagePath: 'assets/imgs/colores.png',
@@ -151,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         _buildCategoryButton(
                           context: context,
                           text: 'FAMILIA',
-                          color: const Color(0xFF3498DB),
+                          color: const Color.fromARGB(255, 23, 108, 177),
                           size: buttonSize,
                           destination: const FamiliaScreen(),
                           imagePath: 'assets/imgs/familia.png',
@@ -160,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         _buildCategoryButton(
                           context: context,
                           text: 'HACER',
-                          color: const Color(0xFF27AE60),
+                          color: Colors.green,
                           size: buttonSize,
                           destination: const HacerScreen(),
                           imagePath: 'assets/imgs/hacer.png',
