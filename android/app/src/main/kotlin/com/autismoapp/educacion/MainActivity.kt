@@ -1,4 +1,4 @@
-package com.example.autismo_app
+package com.autismoapp.educacion
 
 import io.flutter.embedding.android.FlutterActivity
 

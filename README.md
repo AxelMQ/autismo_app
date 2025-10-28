@@ -200,6 +200,74 @@ dev_dependencies:
 - Estructura modular
 - Separación de responsabilidades
 
+### 🔐 Configuración de Firma para Play Store
+
+#### Generación del Keystore
+```bash
+# Generar keystore (ejecutar una sola vez)
+keytool -genkey -v -keystore android/upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload -storepass autismoapp2024 -keypass autismoapp2024 -dname "CN=Autismo App, OU=Development, O=AutismoApp, L=City, S=State, C=US"
+```
+
+#### Configuración en build.gradle.kts
+```kotlin
+android {
+    signingConfigs {
+        create("release") {
+            keyAlias = "upload"
+            keyPassword = "autismoapp2024"
+            storeFile = file("../upload-keystore.jks")
+            storePassword = "autismoapp2024"
+        }
+    }
+    
+    buildTypes {
+        release {
+            signingConfig = signingConfigs.getByName("release")
+        }
+    }
+}
+```
+
+#### Archivo key.properties
+```properties
+storePassword=autismoapp2024
+keyPassword=autismoapp2024
+keyAlias=upload
+storeFile=upload-keystore.jks
+```
+
+### 📱 Proceso de Publicación
+
+#### 1. Preparación
+- ✅ Keystore generado y configurado
+- ✅ Package ID único (`com.autismoapp.educacion`)
+- ✅ API Level 35 (cumple requisitos)
+- ✅ Versión única (1.0.0+3)
+
+#### 2. Compilación
+```bash
+# Limpiar proyecto
+flutter clean
+
+# Generar AAB para Play Store
+flutter build appbundle --release
+
+# Generar APK para pruebas
+flutter build apk --release
+```
+
+#### 3. Verificación
+- ✅ App probada en dispositivo físico
+- ✅ Todas las funciones operativas
+- ✅ Sin errores de ejecución
+- ✅ Logs de debug limpios
+
+#### 4. Subida a Play Store
+- Subir AAB a Google Play Console
+- Completar información de la app
+- Configurar pruebas internas
+- Enviar a revisión de Google
+
 ## 📊 Métricas del Proyecto
 
 - **Líneas de código**: ~1,500 líneas
@@ -221,19 +289,30 @@ dev_dependencies:
 - [x] **Feedback háptico** - Vibración y efectos táctiles mejorados
 - [x] **Gráficos optimizados** - Sin overflow, colores sutiles, interactividad mejorada
 - [x] **APK release** - Compilado exitosamente para distribución
+- [x] **Configuración de firma** - Keystore generado y configurado
+- [x] **Package ID actualizado** - Cambiado a `com.autismoapp.educacion`
+- [x] **API Level 35** - Cumple requisitos de Google Play Store
+- [x] **AAB generado** - Listo para subir a Play Store
+- [x] **Pruebas en dispositivo físico** - Verificado funcionamiento completo
 
-### 🎯 Estado Actual: LISTO PARA PLAY STORE
+### 🎯 Estado Actual: ✅ LISTO PARA PLAY STORE
 - ✅ **Código sin errores** - 0 warnings, 0 errores de análisis
-- ✅ **APK compilado** - 32.1MB, optimizado con tree-shaking
+- ✅ **AAB compilado** - 50.6MB, optimizado con tree-shaking
+- ✅ **APK compilado** - 32.1MB, probado en dispositivo físico
 - ✅ **UI/UX final** - Animaciones suaves, colores sutiles, accesible
 - ✅ **Persistencia real** - Datos guardados automáticamente
 - ✅ **Estadísticas funcionales** - Gráficos interactivos y reales
+- ✅ **Firma configurada** - Keystore personal para Play Store
+- ✅ **API Level 35** - Cumple requisitos de Google
+- ✅ **Package ID único** - `com.autismoapp.educacion`
+- ✅ **Versión 1.0.0+3** - Código de versión único
 
-### Corto Plazo
-- [ ] Subir a Google Play Store
-- [ ] Crear capturas de pantalla para Play Store
-- [ ] Documentar proceso de publicación
-- [ ] Monitorear feedback de usuarios
+### 🚀 Próximos Pasos
+- [x] ✅ **AAB generado** - Listo para subir
+- [ ] **Subir a Google Play Console** - Proceso de publicación
+- [ ] **Completar ficha de la app** - Descripción, imágenes, etc.
+- [ ] **Enviar a revisión** - Proceso de aprobación de Google
+- [ ] **Monitorear feedback** - Una vez publicada
 
 ### Mediano Plazo
 - [ ] Implementar Provider para estado global
@@ -274,18 +353,29 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más det
 ## 📱 Google Play Store
 
 ### 🚀 Estado de Publicación
-- **Estado**: Listo para subir a Play Store
-- **APK**: Compilado en modo release (32.1MB)
-- **Verificación**: En proceso de verificación de identidad
+- **Estado**: ✅ LISTO PARA PLAY STORE
+- **AAB**: Compilado en modo release (50.6MB)
+- **Firma**: Configurada con keystore personal
+- **API Level**: 35 (cumple requisitos de Google)
+- **Package ID**: `com.autismoapp.educacion`
+- **Versión**: 1.0.0+3
 - **Código**: 0 errores, 0 warnings
+
+### 🔐 Configuración de Firma
+- **Keystore**: `upload-keystore.jks` generado
+- **Alias**: `upload`
+- **Algoritmo**: RSA 2048-bit
+- **Validez**: 10,000 días (~27 años)
+- **Certificado**: Autofirmado para desarrollo
 
 ### 📋 Información para Play Store
 - **Nombre**: Autismo App
 - **Categoría**: Educación
 - **Público objetivo**: Niños de 3-8 años
-- **Idioma**: Español
+- **Idioma**: Español (es-419)
 - **Precio**: Gratuita
-- **Tamaño**: ~32MB
+- **Tamaño**: ~50MB (AAB)
+- **Compatibilidad**: Android 5.0+ (API 21+)
 
 ### 🎯 Características Destacadas
 - ✅ Diseño accesible para niños con autismo
@@ -295,6 +385,27 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más det
 - ✅ Estadísticas de progreso
 - ✅ Interfaz en español
 - ✅ Sin publicidad ni compras in-app
+- ✅ Texto a voz integrado
+- ✅ Sistema de género personalizable
+
+### 🔧 Proceso de Compilación
+```bash
+# Generar AAB para Play Store
+flutter build appbundle --release
+
+# Generar APK para pruebas
+flutter build apk --release
+
+# Ejecutar en dispositivo físico
+flutter run --release
+```
+
+### 📊 Métricas de Compilación
+- **Tiempo de compilación**: ~2-3 minutos
+- **Tamaño AAB**: 50.6MB
+- **Tamaño APK**: 32.1MB
+- **Tree-shaking**: 99.8% reducción de iconos
+- **Optimización**: Impeller rendering backend
 
 ## 📞 Contacto
 
